@@ -15,7 +15,14 @@ class DT_Advanced_Security_File_Logger
     }
 
     public function insert_activity( $args ) {
-        dt_write_log("we're hooked! " . json_encode( $args ) );
+        try {
+            $filename = DT_Advanced_Security::get_instance()->dir_path . "/activity.log";
+            file_put_contents( $filename, json_encode( $args ) . PHP_EOL, FILE_APPEND );
+        } catch ( Exception $ex ) {
+            dt_write_log( json_encode( $ex ) );
+        }
+
+        //todo: handle file size by either truncating or creating new files (delete after a given period?)
     }
 }
 DT_Advanced_Security_File_Logger::instance();
