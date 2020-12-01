@@ -1,26 +1,24 @@
 {
-  "name": "Disciple Tools - Starter Plugin",
+  "name": "Disciple Tools - Advanced Security",
   "version": "0.1.0",
-  "download_url": "https://github.com/DiscipleTools/disciple-tools-starter-plugin-template/releases/latest/download/disciple-tools-starter-plugin.zip",
+  "download_url": "https://github.com/cairocoder01/disciple-tools-advanced-security/releases/latest/download/disciple-tools-advanced-security.zip",
   "sections": {
-    "description": "Disciple Tools - Starter Plugin.",
+    "description": "Disciple Tools - Advanced Security.",
     "installation": "(Required) You must have Disciple.Tools Theme installed before using this plugin. Once Disciple.Tools is installed, you can use the normal Plugin system to install the plugin.",
     "changelog": ""
   },
-  "last_updated": "2020-1-24",
-  "upgrade_notice": "Here's why you should upgrade...",
+  "last_updated": "2020-12-1",
+  "upgrade_notice": "Initial release",
   "requires": "4.7",
-  "tested": "5.5.1",
+  "tested": "5.5.3",
   "banners": {
     "low": "https://raw.githubusercontent.com/DiscipleTools/disciple-tools-version-control/master/images/dt-placeholder-772x250.jpg",
     "high": "https://raw.githubusercontent.com/DiscipleTools/disciple-tools-version-control/master/images/dt-placeholder-1544x500.jpg"
   },
   "author": "Disciple Tools",
-  "author_homepage": "https://disciple.tools",
-  "homepage": "https://github.com/DiscipleTools/disciple-tools-starter-plugin-template",
-  "issues_url": "https://github.com/DiscipleTools/disciple-tools-starter-plugin-template/issues",
-  "projects_url": "https://github.com/DiscipleTools/disciple-tools-starter-plugin-template/projects",
-  "wiki_url": "https://github.com/DiscipleTools/disciple-tools-starter-plugin-template/wiki",
-  "license_url": "https://github.com/DiscipleTools/disciple-tools-starter-plugin-template/blob/master/LICENSE",
-  "readme_url": "https://github.com/DiscipleTools/disciple-tools-starter-plugin-template/blob/master/README.md"
+  "author_homepage": "https://github.com/cairocoder01",
+  "homepage": "https://github.com/cairocoder01/disciple-tools-advanced-security",
+  "issues_url": "https://github.com/cairocoder01/disciple-tools-advanced-security/issues",
+  "license_url": "https://github.com/cairocoder01/disciple-tools-advanced-security/blob/master/LICENSE",
+  "readme_url": "https://github.com/cairocoder01/disciple-tools-advanced-security/blob/master/README.md"
 }
