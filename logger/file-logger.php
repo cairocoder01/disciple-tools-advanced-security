@@ -17,6 +17,10 @@ class DT_Advanced_Security_File_Logger
     public function insert_activity( $args ) {
         try {
 
+            if ( !$this->should_write_log( $args ) ) {
+                return;
+            }
+
             $dirpath = DT_Advanced_Security::get_instance()->dir_path . "logs/";
             $filename = $dirpath . "activity.log";
 
@@ -47,6 +51,23 @@ class DT_Advanced_Security_File_Logger
         } catch ( Exception $ex ) {
             dt_write_log( json_encode( $ex ) );
         }
+    }
+
+    /**
+     * Test if a given activity_log should be written to the log file
+     * @param $args
+     * @return bool
+     */
+    private function should_write_log( $args ) {
+        $include = false;
+        $include = $include || (
+            $args['action'] == 'created' && $args['object_type'] == 'site_link_system'
+        );
+
+        $include = apply_filters( 'dt_advanced_security_activity_included', $include, $args );
+        dt_write_log( json_encode( $include ) );
+        dt_write_log( json_encode( $args ) );
+        return $include;
     }
 }
 DT_Advanced_Security_File_Logger::instance();
