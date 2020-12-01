@@ -116,9 +116,9 @@ class DT_Advanced_Security {
 
             $hosted_json = "https://raw.githubusercontent.com/cairocoder01/disciple-tools-advanced-security/master/admin/version-control.json"; // change this url
             Puc_v4_Factory::buildUpdateChecker(
-            $hosted_json,
-            __FILE__,
-            'disciple-tools-advanced-security' // change this token
+                $hosted_json,
+                __FILE__,
+                'disciple-tools-advanced-security' // change this token
             );
 
         }
@@ -161,12 +161,12 @@ class DT_Advanced_Security {
      * @return  array       $links_array
      */
     public function plugin_description_links( $links_array, $plugin_file_name, $plugin_data, $status ) {
-        if ( strpos( $plugin_file_name, basename( __FILE__ ) ) ) {
+        /*if ( strpos( $plugin_file_name, basename( __FILE__ ) ) ) {
             // You can still use `array_unshift()` to add links at the beginning.
 
             // $links_array[] = '<a href="https://disciple.tools">Disciple.Tools Community</a>'; // @todo replace with your links.
             // add other links here
-        }
+        }*/
 
         return $links_array;
     }
