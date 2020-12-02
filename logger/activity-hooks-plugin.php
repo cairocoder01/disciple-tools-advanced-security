@@ -9,6 +9,7 @@ class DT_Advanced_Security_Hooks_Plugin
         add_action( 'deleted_plugin', [ $this, 'deleted_plugin' ], 10, 2 );
         add_action( 'activated_plugin', [ $this, 'activated_plugin' ], 10, 2 );
         add_action( 'deactivated_plugin', [ $this, 'deactivated_plugin' ], 10, 2 );
+        add_action( 'upgrader_process_complete', [ $this, 'upgrade_plugin' ], 10, 2 );
 
     }
 
@@ -58,5 +59,32 @@ class DT_Advanced_Security_Hooks_Plugin
                 'object_name' => $plugin,
             ]
         );
+    }
+
+    public function upgrade_plugin( $upgrader, $hook_extra ) {
+        if ( !is_array( $hook_extra ) || !array_key_exists( 'action', $hook_extra ) || !array_key_exists( 'type', $hook_extra ) ) {
+            return;
+        }
+
+        if ( $hook_extra['action'] != 'update' || $hook_extra['type'] != 'plugin' || !array_key_exists( 'plugins', $hook_extra ) ) {
+            return;
+        }
+
+        // log upgrade of each plugin
+        if (is_array( $hook_extra['plugins'] ) && !empty( $hook_extra['plugins'] )) {
+            foreach ($hook_extra['plugins'] as $plugin) {
+                $plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin );
+                dt_write_log( json_encode( $plugin_data ) );
+                $version = $plugin_data && is_array( $plugin_data ) ? $plugin_data['Version'] : '';
+                dt_activity_insert(
+                    [
+                        'action' => 'update',
+                        'object_type' => $this->object_type,
+                        'object_name' => $plugin,
+                        'object_note' => $version,
+                    ]
+                );
+            }
+        }
     }
 }
