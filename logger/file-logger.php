@@ -61,6 +61,9 @@ class DT_Advanced_Security_File_Logger
     private function should_write_log( $args ) {
         $include = false;
 
+        // All plugin actions
+        $include = $include || $args['object_type'] == 'plugin';
+
         // All site link actions
         $include = $include || $args['object_type'] == 'site_link_system';
 
