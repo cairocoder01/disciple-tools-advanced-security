@@ -18,6 +18,18 @@ class DT_Advanced_Security_Hooks
         new DT_Advanced_Security_Hooks_User();
         new DT_Advanced_Security_Hooks_Plugin();
 
+        add_action( '_core_updated_successfully', [ $this, 'update_core' ] );
+    }
+
+    public function update_core( $version ) {
+
+        dt_activity_insert(
+            [
+                'action' => 'update',
+                'object_type' => 'core',
+                'object_name' => $version,
+            ]
+        );
     }
 }
 DT_Advanced_Security_Hooks::instance();
