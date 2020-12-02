@@ -60,9 +60,12 @@ class DT_Advanced_Security_File_Logger
      */
     private function should_write_log( $args ) {
         $include = false;
-        $include = $include || (
-            $args['action'] == 'created' && $args['object_type'] == 'site_link_system'
-        );
+
+        // All site link actions
+        $include = $include || $args['object_type'] == 'site_link_system';
+
+        // All user actions (logged_in, invalid_login, etc.)
+        $include = $include || $args['object_type'] == 'User' || $args['object_type'] == 'user';
 
         $include = apply_filters( 'dt_advanced_security_activity_included', $include, $args );
         dt_write_log( json_encode( $include ) );
