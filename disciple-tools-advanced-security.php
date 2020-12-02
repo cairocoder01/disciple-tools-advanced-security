@@ -130,6 +130,7 @@ class DT_Advanced_Security {
     private function includes() {
 
         require_once( 'logger/file-logger.php' );
+        require_once('logger/activity-hooks.php');
 
     }
 
