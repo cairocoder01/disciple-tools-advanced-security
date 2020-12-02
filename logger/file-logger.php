@@ -74,6 +74,9 @@ class DT_Advanced_Security_File_Logger
     private function should_write_log( $args ) {
         $include = false;
 
+        // Export of any types
+        $include = $include || $args['action'] == 'export';
+
         // All core actions
         $include = $include || $args['object_type'] == 'core';
 
