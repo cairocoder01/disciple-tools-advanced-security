@@ -47,7 +47,7 @@ jobs:
     - name: Build project
       run: |
         mkdir disciple-tools-advanced-security |
-        cp -r disciple-tools-advanced-security.php LICENSE admin assets vendor disciple-tools-advanced-security/ |
+        cp -r disciple-tools-advanced-security.php LICENSE admin assets logger disciple-tools-advanced-security/ |
         zip -r disciple-tools-advanced-security.zip disciple-tools-advanced-security
     - name: Create Release
       id: create_release
