@@ -23,11 +23,11 @@ class DT_Advanced_Security_Hooks_User
 
         // Set user IP address
         if ( !empty( $_SERVER['HTTP_CLIENT_IP'] )) {
-            $this->current_ip_address = $_SERVER['HTTP_CLIENT_IP'];
-        } else if ( !empty( $_SERVER['HTTP_X_FORWARDED_FOR'] )) {
-            $this->current_ip_address = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } else {
-            $this->current_ip_address = $_SERVER['REMOTE_ADDR'];
+            $this->current_ip_address = sanitize_text_field( wp_unslash( $_SERVER['HTTP_CLIENT_IP'] ) );
+        } else if ( !empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+            $this->current_ip_address = sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) );
+        } else if ( !empty( $_SERVER['REMOTE_ADDR'] ) ) {
+            $this->current_ip_address = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
         }
     }
 
@@ -108,7 +108,7 @@ class DT_Advanced_Security_Hooks_User
      * @param $user_id
      * @param $role
      */
-    public function add_user_role ( $user_id, $role ) {
+    public function add_user_role( $user_id, $role ) {
         dt_activity_insert(
             [
                 'action' => 'add_role',
@@ -124,7 +124,7 @@ class DT_Advanced_Security_Hooks_User
      * @param $user_id
      * @param $role
      */
-    public function remove_user_role ( $user_id, $role ) {
+    public function remove_user_role( $user_id, $role ) {
         dt_activity_insert(
             [
                 'action' => 'remove_role',
@@ -142,7 +142,7 @@ class DT_Advanced_Security_Hooks_User
      * @param $role
      * @param $blog_id
      */
-    public function add_user_to_blog ( $user_id, $role, $blog_id ) {
+    public function add_user_to_blog( $user_id, $role, $blog_id ) {
         dt_activity_insert(
             [
                 'action' => 'add_to_site',
@@ -160,7 +160,7 @@ class DT_Advanced_Security_Hooks_User
      * @param $blog_id
      * @param $reassign
      */
-    public function remove_user_from_blog ( $user_id, $blog_id, $reassign ) {
+    public function remove_user_from_blog( $user_id, $blog_id, $reassign ) {
         // $blog_id seems to be 0 if you remove from network/site-users.php?id={siteId}
         // but it's correct when removing from within the given site
         dt_activity_insert(
@@ -207,7 +207,7 @@ class DT_Advanced_Security_Hooks_User
      * @param $reassign
      * @param $user
      */
-    public function deleted_user ( $id, $reassign, $user ) {
+    public function deleted_user( $id, $reassign, $user ) {
         dt_activity_insert(
             [
                 'action' => 'deleted',
