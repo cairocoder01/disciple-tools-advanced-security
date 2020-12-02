@@ -90,8 +90,8 @@ class DT_Advanced_Security_File_Logger
         $include = $include || $args['object_type'] == 'User' || $args['object_type'] == 'user';
 
         $include = apply_filters( 'dt_advanced_security_activity_included', $include, $args );
-        dt_write_log( json_encode( $include ) );
-        dt_write_log( json_encode( $args ) );
+        // dt_write_log( "include activity: " . json_encode( $include ) );
+        // dt_write_log( json_encode( $args ) );
         return $include;
     }
 }

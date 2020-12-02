@@ -74,7 +74,6 @@ class DT_Advanced_Security_Hooks_Plugin
         if (is_array( $hook_extra['plugins'] ) && !empty( $hook_extra['plugins'] )) {
             foreach ($hook_extra['plugins'] as $plugin) {
                 $plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin );
-                dt_write_log( json_encode( $plugin_data ) );
                 $version = $plugin_data && is_array( $plugin_data ) ? $plugin_data['Version'] : '';
                 dt_activity_insert(
                     [
