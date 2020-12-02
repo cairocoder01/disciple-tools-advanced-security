@@ -21,7 +21,7 @@ class DT_Advanced_Security_File_Logger
                 return;
             }
 
-            $dirpath = DT_Advanced_Security::get_instance()->dir_path . "logs/";
+            $dirpath = $this->get_log_path();
             $filename = $dirpath . "activity.log";
 
             // Create logs directory if it doesn't exist
@@ -53,6 +53,19 @@ class DT_Advanced_Security_File_Logger
         }
     }
 
+    private function get_log_path() {
+        $path = DT_Advanced_Security::get_instance()->dir_path . "logs/";
+
+        if ( is_multisite() ) {
+            $site = get_blog_details();
+            if ( $site ) {
+                $path .= $site->domain . "/";
+            }
+        }
+
+        return $path;
+    }
+
     /**
      * Test if a given activity_log should be written to the log file
      * @param $args
@@ -61,8 +74,14 @@ class DT_Advanced_Security_File_Logger
     private function should_write_log( $args ) {
         $include = false;
 
+        // All core actions
+        $include = $include || $args['object_type'] == 'core';
+
         // All plugin actions
         $include = $include || $args['object_type'] == 'plugin';
+
+        // All theme actions
+        $include = $include || $args['object_type'] == 'theme';
 
         // All site link actions
         $include = $include || $args['object_type'] == 'site_link_system';
