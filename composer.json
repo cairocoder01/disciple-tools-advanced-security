@@ -1,10 +1,10 @@
 {
     "scripts": {
         "lint": [
-            "vendor/bin/phpcs"
+            "vendor/bin/phpcs -s"
         ],
         "lint-fix": [
-            "vendor/bin/phpcbf"
+            "vendor/bin/phpcbf -s"
         ]
     },
     "require-dev": {
