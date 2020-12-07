@@ -222,11 +222,11 @@ class DT_Advanced_Security_Logs {
                         <td class="column-histid"><?php echo nl2br( esc_html( str_replace( 'T', PHP_EOL, gmdate( DATE_ATOM, $log['hist_time'] ) ) ) ) ?></td>
                         <td class="column-user_id">
                         <?php
-                            if ( !empty( $log['user_nicename'] ) ) {
-                                esc_html_e( $log['user_nicename'] . ' (ID:' . $log['user_id'] . ')' );
-                            } else {
-                                esc_html_e( $log['user_id'] );
-                            }
+                        if ( !empty( $log['user_nicename'] ) ) {
+                            esc_html_e( $log['user_nicename'] . ' (ID:' . $log['user_id'] . ')' );
+                        } else {
+                            esc_html_e( $log['user_id'] );
+                        }
                         ?>
                         </td>
                         <td class="column-action"><?php echo esc_html( $log['action'] ) ?></td>
@@ -238,20 +238,20 @@ class DT_Advanced_Security_Logs {
                             <a class="view-details" href="javascript:;" data-id="<?php esc_attr_e( $log['histid'] ) ?>"><span class="dashicons dashicons-info"></span></a>
                             <?php
                                 $logged_to_file = apply_filters( 'dt_advanced_security_activity_included', false, $log );
-                                if ( $logged_to_file ) {
-                                    echo "<span class='dashicons dashicons-migrate' title='Item should be written to log file'></span>";
-                                }
+                            if ( $logged_to_file ) {
+                                echo "<span class='dashicons dashicons-migrate' title='Item should be written to log file'></span>";
+                            }
                             ?>
                             <div class="details-content" style="display:none;">
                                 <table class="form-table" role="presentation">
-                                <?php foreach( $log as $key => $value ): ?>
+                                <?php foreach ( $log as $key => $value ): ?>
                                     <tr class="form-field">
                                         <th scope="row"><?php esc_html_e( $key ) ?></th>
                                         <td><?php esc_html_e( $key == 'hist_time' ? gmdate( DATE_ATOM, $log['hist_time'] ) : $value ) ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                                 </table>
-                                <pre style="display: none;"><code><?php echo json_encode($log, JSON_PRETTY_PRINT) ?></code></pre>
+                                <pre style="display: none;"><code><?php echo json_encode( $log, JSON_PRETTY_PRINT ) ?></code></pre>
                             </div>
                         </td>
                     </tr>
