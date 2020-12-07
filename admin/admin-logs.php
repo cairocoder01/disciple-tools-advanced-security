@@ -236,6 +236,12 @@ class DT_Advanced_Security_Logs {
                         <td class="column-object_subtype"><?php echo esc_html( $log['object_subtype'] ) ?></td>
                         <td class="column-details">
                             <a class="view-details" href="javascript:;" data-id="<?php esc_attr_e( $log['histid'] ) ?>"><span class="dashicons dashicons-info"></span></a>
+                            <?php
+                                $logged_to_file = apply_filters( 'dt_advanced_security_activity_included', false, $log );
+                                if ( $logged_to_file ) {
+                                    echo "<span class='dashicons dashicons-migrate' title='Item should be written to log file'></span>";
+                                }
+                            ?>
                             <div class="details-content" style="display:none;">
                                 <table class="form-table" role="presentation">
                                 <?php foreach( $log as $key => $value ): ?>

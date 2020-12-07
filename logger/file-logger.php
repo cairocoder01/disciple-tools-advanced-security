@@ -12,6 +12,7 @@ class DT_Advanced_Security_File_Logger
 
     public function __construct() {
         add_action( 'dt_insert_activity', [ $this, 'insert_activity' ] );
+        add_filter( 'dt_advanced_security_activity_included', [ $this, 'hook_activity_included' ], 10, 2 );
     }
 
     public function insert_activity( $args ) {
@@ -72,8 +73,11 @@ class DT_Advanced_Security_File_Logger
      * @return bool
      */
     private function should_write_log( $args ) {
-        $include = false;
+        $include = apply_filters( 'dt_advanced_security_activity_included', false, $args );
+        return $include;
+    }
 
+    public function hook_activity_included( $include, $args ) {
         // Export of any types
         $include = $include || $args['action'] == 'export';
 
@@ -92,9 +96,6 @@ class DT_Advanced_Security_File_Logger
         // All user actions (logged_in, invalid_login, etc.)
         $include = $include || $args['object_type'] == 'User' || $args['object_type'] == 'user';
 
-        $include = apply_filters( 'dt_advanced_security_activity_included', $include, $args );
-        // dt_write_log( "include activity: " . json_encode( $include ) );
-        // dt_write_log( json_encode( $args ) );
         return $include;
     }
 }
