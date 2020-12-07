@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; // Exit if accessed directly
 class DT_Advanced_Security_Logs {
 
     public $token = 'dt_advanced_security_logs';
-    public $page_size = 10;
+    public $page_size = 50;
     private $logs;
     private $_pagination_args;
 
@@ -223,9 +223,9 @@ class DT_Advanced_Security_Logs {
                         <td class="column-user_id">
                         <?php
                         if ( !empty( $log['user_nicename'] ) ) {
-                            esc_html_e( $log['user_nicename'] . ' (ID:' . $log['user_id'] . ')' );
+                            echo esc_html( $log['user_nicename'] . ' (ID:' . $log['user_id'] . ')' );
                         } else {
-                            esc_html_e( $log['user_id'] );
+                            echo esc_html( $log['user_id'] );
                         }
                         ?>
                         </td>
@@ -235,7 +235,7 @@ class DT_Advanced_Security_Logs {
                         <td class="column-object_id"><?php echo esc_html( $log['object_id'] ) ?></td>
                         <td class="column-object_subtype"><?php echo esc_html( $log['object_subtype'] ) ?></td>
                         <td class="column-details">
-                            <a class="view-details" href="javascript:;" data-id="<?php esc_attr_e( $log['histid'] ) ?>"><span class="dashicons dashicons-info"></span></a>
+                            <a class="view-details" href="javascript:;" data-id="<?php echo esc_attr( $log['histid'] ) ?>"><span class="dashicons dashicons-info"></span></a>
                             <?php
                                 $logged_to_file = apply_filters( 'dt_advanced_security_activity_included', false, $log );
                             if ( $logged_to_file ) {
@@ -246,8 +246,16 @@ class DT_Advanced_Security_Logs {
                                 <table class="form-table" role="presentation">
                                 <?php foreach ( $log as $key => $value ): ?>
                                     <tr class="form-field">
-                                        <th scope="row"><?php esc_html_e( $key ) ?></th>
-                                        <td><?php esc_html_e( $key == 'hist_time' ? gmdate( DATE_ATOM, $log['hist_time'] ) : $value ) ?></td>
+                                        <th scope="row"><?php echo esc_html( $key ) ?></th>
+                                        <td>
+                                        <?php
+                                        if ( $key == 'hist_time' ) {
+                                            echo esc_html( gmdate( DATE_ATOM, $log['hist_time'] ) );
+                                        } else {
+                                            echo esc_html( $value );
+                                        }
+                                        ?>
+                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
                                 </table>
