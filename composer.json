@@ -9,6 +9,14 @@
     },
     "require-dev": {
         "dealerdirect/phpcodesniffer-composer-installer": "*",
-        "wp-coding-standards/wpcs": "*"
+        "wp-coding-standards/wpcs": "*",
+        "brainmaestro/composer-git-hooks": "^2.8"
+    },
+    "extra": {
+        "hooks": {
+            "pre-commit": [
+                "vendor/bin/phpcs"
+            ]
+        }
     }
 }
