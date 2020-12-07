@@ -140,7 +140,7 @@ class DT_Advanced_Security_Logs {
 
         ?>
         <div class="wrap">
-            <h2><?php esc_attr_e( 'Advanced Security - Activity Logs', 'dt_advanced_security' ) ?></h2>
+            <h2><?php esc_attr_e( 'Activity Logs', 'dt_advanced_security' ) ?></h2>
 
             <div class="wrap">
                 <div id="poststuff">
@@ -198,8 +198,6 @@ class DT_Advanced_Security_Logs {
     public function main_column() {
         ?>
         <form method="GET" action="">
-            <?php wp_nonce_field( 'security_headers', 'security_headers_nonce' ); ?>
-
             <?php $this->filters_actions() ?>
 
             <table class="wp-list-table widefat striped itsec-log-entries itsec-logs-color">
@@ -222,7 +220,15 @@ class DT_Advanced_Security_Logs {
                     <tr class="itsec-log-type-notice">
                         <td class="id column-id hidden" data-colname="ID"><?php echo esc_html( $log['histid'] ) ?></td>
                         <td class="column-histid"><?php echo nl2br( esc_html( str_replace( 'T', PHP_EOL, gmdate( DATE_ATOM, $log['hist_time'] ) ) ) ) ?></td>
-                        <td class="column-user_id"><?php echo esc_html( $log['user_id'] ) ?></td>
+                        <td class="column-user_id">
+                        <?php
+                            if ( !empty( $log['user_nicename'] ) ) {
+                                esc_html_e( $log['user_nicename'] . ' (ID:' . $log['user_id'] . ')' );
+                            } else {
+                                esc_html_e( $log['user_id'] );
+                            }
+                        ?>
+                        </td>
                         <td class="column-action"><?php echo esc_html( $log['action'] ) ?></td>
                         <td class="column-object_type"><?php echo esc_html( $log['object_type'] ) ?></td>
                         <td class="column-object_name"><?php echo esc_html( $log['object_name'] ) ?></td>
@@ -440,7 +446,8 @@ class DT_Advanced_Security_Logs {
         array_push( $params, $offset );
         array_push( $params, $limit );
         $sql = "
-            SELECT * FROM $wpdb->dt_activity_log
+            SELECT l.*, u.user_nicename, u.user_login FROM $wpdb->dt_activity_log l
+            LEFT JOIN $wpdb->users u on l.user_id = u.ID
             $where
             ORDER BY `hist_time` DESC, `histid` DESC
             LIMIT %d, %d
