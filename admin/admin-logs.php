@@ -47,6 +47,7 @@ class DT_Advanced_Security_Logs {
     public function styles() {
         ?>
         <style type="text/css">
+            code { display: block; }
             .actions {
                 display: flex;
                 align-items: flex-end;
@@ -74,6 +75,49 @@ class DT_Advanced_Security_Logs {
                     }
                     $('.dtsec-filter').val('');
                 });
+
+                $('.view-details').click(function(e) {
+                    e.preventDefault();
+                    var histid = $(this).data('id');
+                    var dialogId = '#dialog-' + histid;
+                    var dialog = $(dialogId);
+                    if (dialog && dialog.length) {
+                        dialog.dialog('open');
+                    } else {
+                        var content = $(this).next();
+
+                        if (content.length) {
+                            dialog = $('<div id="dialog-' + histid + '"></div>').dialog({
+                                title: 'Log Details',
+                                dialogClass: 'wp-dialog',
+                                autoOpen: false,
+                                draggable: false,
+                                width: 'auto',
+                                modal: true,
+                                resizable: false,
+                                closeOnEscape: true,
+                                position: {
+                                    my: "center",
+                                    at: "center",
+                                    of: window
+                                },
+                                open: function () {
+                                    // close dialog by clicking the overlay behind it
+                                    $(this).html(content[0].innerHTML);
+                                    $('.ui-widget-overlay').bind('click', function () {
+                                        $('#dialog-' + histid).dialog('close');
+                                    })
+                                },
+                                create: function () {
+                                    // style fix for WordPress admin
+                                    $('.ui-dialog-titlebar-close').addClass('ui-button');
+                                },
+                            });
+
+                            dialog.dialog('open');
+                        }
+                    }
+                });
             });
         </script>
         <?php
@@ -87,6 +131,9 @@ class DT_Advanced_Security_Logs {
         if ( !current_user_can( 'manage_dt' ) ) { // manage dt is a permission that is specific to Disciple Tools and allows admins, strategists and dispatchers into the wp-admin
             wp_die( esc_attr__( 'You do not have sufficient permissions to access this page.' ) );
         }
+
+        wp_enqueue_script( 'jquery-ui-dialog' );
+        wp_enqueue_style( 'wp-jquery-ui-dialog' );
 
         $this->get_logs();
         $this->styles();
@@ -181,7 +228,20 @@ class DT_Advanced_Security_Logs {
                         <td class="column-object_name"><?php echo esc_html( $log['object_name'] ) ?></td>
                         <td class="column-object_id"><?php echo esc_html( $log['object_id'] ) ?></td>
                         <td class="column-object_subtype"><?php echo esc_html( $log['object_subtype'] ) ?></td>
-                        <td class="column-details"><span class="dashicons dashicons-info"></span></td>
+                        <td class="column-details">
+                            <a class="view-details" href="javascript:;" data-id="<?php esc_attr_e( $log['histid'] ) ?>"><span class="dashicons dashicons-info"></span></a>
+                            <div class="details-content" style="display:none;">
+                                <table class="form-table" role="presentation">
+                                <?php foreach( $log as $key => $value ): ?>
+                                    <tr class="form-field">
+                                        <th scope="row"><?php esc_html_e( $key ) ?></th>
+                                        <td><?php esc_html_e( $key == 'hist_time' ? gmdate( DATE_ATOM, $log['hist_time'] ) : $value ) ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                                </table>
+                                <pre style="display: none;"><code><?php echo json_encode($log, JSON_PRETTY_PRINT) ?></code></pre>
+                            </div>
+                        </td>
                     </tr>
 
                 <?php endforeach; ?>
