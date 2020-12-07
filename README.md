@@ -50,7 +50,9 @@ function my_filter( $include, $args ) {
 
 # Contributing
 ## Getting Started
-Install Composer packages: `composer install`
+* Install Composer packages: `composer install`
+* Initialize git hooks: `vendor/bin/cghooks add`
+  * This will run PHPCS code linting prior to each commit
 
 ## Submitting Updates
 1. Before submitting any code, ensure lint rules all pass: `composer run lint`
