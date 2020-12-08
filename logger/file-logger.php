@@ -27,7 +27,7 @@ class DT_Advanced_Security_File_Logger
 
             // Create logs directory if it doesn't exist
             if ( !file_exists( $dirpath ) ) {
-                mkdir( $dirpath );
+                mkdir( $dirpath, 0777, true );
             }
 
             // Write activity to log file
@@ -59,8 +59,14 @@ class DT_Advanced_Security_File_Logger
 
         if ( is_multisite() ) {
             $site = get_blog_details();
+            dt_write_log( json_encode( $site ) );
             if ( $site ) {
-                $path .= $site->domain . "/";
+                $path .= $site->domain;
+                // if subdirectory multisite, we'll need the path
+                if ( !empty( trim( $site->path, "\/" ) ) ) {
+                    $path .= '-' . trim( $site->path, "\/" );
+                }
+                $path .= "/";
             }
         }
 

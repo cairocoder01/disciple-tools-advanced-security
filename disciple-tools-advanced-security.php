@@ -4,7 +4,7 @@
  * Plugin URI: https://github.com/cairocoder01/disciple-tools-advanced-security
  * Description: Disciple Tools - Advanced Security The Disciple Tools Advanced Security Plugin is intended to facilitate advanced security audits
  * of activity on your Disciple.Tools site.
- * Version:  0.2.0
+ * Version:  0.2.1
  * Author URI: https://github.com/cairocoder01
  * GitHub Plugin URI: https://github.com/cairocoder01/disciple-tools-advanced-security
  * Requires at least: 4.7.0
@@ -92,7 +92,7 @@ class DT_Advanced_Security {
 
         // Admin and settings variables
         $this->token             = 'dt_advanced_security';
-        $this->version             = '0.2';
+        $this->version             = '0.2.1';
 
         // Main plugin directory path and URI.
         $this->dir_path     = trailingslashit( plugin_dir_path( __FILE__ ) );
