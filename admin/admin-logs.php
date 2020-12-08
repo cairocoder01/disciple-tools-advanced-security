@@ -84,7 +84,7 @@ class DT_Advanced_Security_Logs {
                     if (dialog && dialog.length) {
                         dialog.dialog('open');
                     } else {
-                        var content = $(this).next();
+                        var content = $(this).nextAll('.details-content');
 
                         if (content.length) {
                             dialog = $('<div id="dialog-' + histid + '"></div>').dialog({
