@@ -1,6 +1,6 @@
 {
   "name": "Disciple Tools - Advanced Security",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "download_url": "https://github.com/cairocoder01/disciple-tools-advanced-security/releases/latest/download/disciple-tools-advanced-security.zip",
   "sections": {
     "description": "Disciple Tools - Advanced Security.",
@@ -8,7 +8,7 @@
     "changelog": ""
   },
   "last_updated": "2020-12-08",
-  "upgrade_notice": "Bug fix for subdirectory-based multi-site",
+  "upgrade_notice": "Bug fix for viewing log details",
   "requires": "4.7",
   "tested": "5.5.3",
   "banners": {
