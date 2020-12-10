@@ -1,16 +1,16 @@
 {
   "name": "Disciple Tools - Advanced Security",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "download_url": "https://github.com/cairocoder01/disciple-tools-advanced-security/releases/latest/download/disciple-tools-advanced-security.zip",
   "sections": {
     "description": "Disciple Tools - Advanced Security.",
     "installation": "(Required) You must have Disciple.Tools Theme installed before using this plugin. Once Disciple.Tools is installed, you can use the normal Plugin system to install the plugin.",
     "changelog": ""
   },
-  "last_updated": "2020-12-08",
-  "upgrade_notice": "Bug fix for viewing log details",
+  "last_updated": "2020-12-10",
+  "upgrade_notice": "Ability to send data directly to Elastic server via REST API",
   "requires": "4.7",
-  "tested": "5.5.3",
+  "tested": "5.6",
   "banners": {
     "low": "https://raw.githubusercontent.com/cairocoder01/disciple-tools-advanced-security/master/assets/banner-772x250.png",
     "high": "https://raw.githubusercontent.com/cairocoder01/disciple-tools-advanced-security/master/assets/banner-1544x500.png"
