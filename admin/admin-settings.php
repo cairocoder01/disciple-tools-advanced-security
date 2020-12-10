@@ -144,7 +144,8 @@ class DT_Advanced_Security_Settings {
         $log_path = DT_Advanced_Security_File_Logger::instance()->get_log_path();
         $log_path = substr( $log_path, strpos( $log_path, "/wp-content" ) );
 
-        $enable_file = boolval( get_option( "dt_advanced_security_enable_file_logger" ) );
+        $file_logger = json_decode( get_option( "dt_advanced_security_file_logger" ), true );
+        $elastic = json_decode( get_option( "dt_advanced_security_elastic_logger" ), true );
         ?>
         <form method="POST" action="">
             <?php wp_nonce_field( 'security_headers', 'security_headers_nonce' ); ?>
@@ -164,8 +165,71 @@ class DT_Advanced_Security_Settings {
                         <p>Save filtered activity log entries to file in directory: <br><code><?php echo esc_html( $log_path ) ?></code></p>
                         <hr>
                         <span class="switch">
-                            <input type="checkbox" id="file" name="enable_file" value="1" <?php echo $enable_file ? 'checked' : '' ?> />
-                            <label for="file">
+                            <input type="checkbox" id="file-enable" name="file_logger[enabled]" value="1" <?php echo isset( $file_logger['enabled'] ) && $file_logger['enabled'] ? 'checked' : '' ?> />
+                            <label for="file-enable">
+                                <span>Enabled:</span>
+                                <span></span>
+                            </label>
+                        </span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- Log to file -->
+            <table class="widefat striped table-settings">
+                <thead>
+                <tr>
+                    <th>Log to Elasticsearch</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <p>
+                            Elasticsearch provides a <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-index_.html" target="_blank">convenient REST API</a>
+                            to receive external data. To send data directly to your Elasticsearch system, enter the URL for that API endpoint below (URL should end with <code>/_dev/</code>)
+                            as well as the authorization credentials that have the proper access.
+                        </p>
+                        <table class="form-table">
+                            <tr>
+                                <th><label for="elastic-url">Endpoint URL</label></th>
+                                <td>
+                                    <input type="url"
+                                           id="elastic-url"
+                                           name="elastic[url]"
+                                           class="regular-text"
+                                           value="<?php echo esc_attr( isset( $elastic['url'] ) ? $elastic['url'] : "" ) ?>"
+                                           />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><label for="elastic-username">Username</label></th>
+                                <td>
+                                    <input type="text"
+                                           id="elastic-username"
+                                           name="elastic[username]"
+                                           class="regular-text"
+                                           value="<?php echo esc_attr( isset( $elastic['username'] ) ? $elastic['username'] : "" ) ?>"
+                                           />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><label for="elastic-password">Password</label></th>
+                                <td>
+                                    <input type="password"
+                                           id="elastic-password"
+                                           name="elastic[password]"
+                                           class="regular-text"
+                                           value="<?php echo esc_attr( isset( $elastic['password'] ) ? $elastic['password'] : "" ) ?>"
+                                           />
+                                </td>
+                            </tr>
+                        </table>
+                        <hr>
+                        <span class="switch">
+                            <input type="checkbox" id="elastic-enable" name="elastic[enabled]" value="1" <?php echo isset( $elastic['enabled'] ) && $elastic['enabled'] ? 'checked' : '' ?> />
+                            <label for="elastic-enable">
                                 <span>Enabled:</span>
                                 <span></span>
                             </label>
@@ -206,11 +270,43 @@ class DT_Advanced_Security_Settings {
     public function save_settings() {
         if ( !empty( $_POST ) ){
             if ( isset( $_POST['security_headers_nonce'] ) && wp_verify_nonce( sanitize_key( $_POST['security_headers_nonce'] ), 'security_headers' ) ) {
-                update_option("dt_advanced_security_enable_file_logger",
-                isset( $_POST['enable_file'] ) && $_POST['enable_file'] === "1" ? "1" : "0");
+
+                // Save file logger settings as json
+                if ( isset( $_POST['file_logger'] ) ) {
+                    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+                    $file_logger = $this->sanitize_text_or_array_field( wp_unslash( $_POST['file_logger'] ) );
+                    $file_logger['enabled'] = isset( $file_logger['enabled'] ) ? boolval( $file_logger['enabled'] ) : false;
+                    update_option( "dt_advanced_security_file_logger", json_encode( $file_logger ) );
+                } else {
+                    update_option( "dt_advanced_security_file_logger", json_encode( [ 'enabled' => false ] ) );
+                }
+
+                // Save Elastic settings as json
+                if ( isset( $_POST['elastic'] ) ) {
+                    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+                    $elastic = $this->sanitize_text_or_array_field( wp_unslash( $_POST['elastic'] ) );
+                    $elastic['enabled'] = isset( $elastic['enabled'] ) ? boolval( $elastic['enabled'] ) : false;
+                    update_option( "dt_advanced_security_elastic_logger", json_encode( $elastic ) );
+                }
             }
 
             echo '<div class="notice notice-success"><p>Settings saved</p></div>';
         }
+    }
+
+    private function sanitize_text_or_array_field( $array_or_string) {
+        if (is_string( $array_or_string )) {
+            $array_or_string = sanitize_text_field( $array_or_string );
+        } elseif (is_array( $array_or_string )) {
+            foreach ($array_or_string as $key => &$value) {
+                if (is_array( $value )) {
+                    $value = $this->sanitize_text_or_array_field( $value );
+                } else {
+                    $value = sanitize_text_field( $value );
+                }
+            }
+        }
+
+        return $array_or_string;
     }
 }

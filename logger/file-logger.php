@@ -12,7 +12,8 @@ class DT_Advanced_Security_File_Logger extends DT_Advanced_Security_Base_Logger
     }
 
     protected function enabled() {
-        return boolval( get_option( "dt_advanced_security_enable_file_logger" ) );
+        $settings = json_decode( get_option( "dt_advanced_security_file_logger" ), true );
+        return $settings && $settings['enabled'];
     }
 
     public function log_activity( $args ) {
