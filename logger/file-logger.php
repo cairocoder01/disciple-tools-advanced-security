@@ -11,7 +11,11 @@ class DT_Advanced_Security_File_Logger
     } // End instance()
 
     public function __construct() {
-        add_action( 'dt_insert_activity', [ $this, 'insert_activity' ] );
+        $enable_file = boolval( get_option( "dt_advanced_security_enable_file_logger" ) );
+
+        if ( $enable_file ) {
+            add_action( 'dt_insert_activity', [ $this, 'insert_activity' ] );
+        }
         add_filter( 'dt_advanced_security_activity_included', [ $this, 'hook_activity_included' ], 10, 2 );
     }
 
@@ -54,7 +58,7 @@ class DT_Advanced_Security_File_Logger
         }
     }
 
-    private function get_log_path() {
+    public function get_log_path() {
         $path = DT_Advanced_Security::get_instance()->dir_path . "logs/";
 
         if ( is_multisite() ) {
