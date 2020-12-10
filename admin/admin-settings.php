@@ -146,8 +146,19 @@ class DT_Advanced_Security_Settings {
 
         $file_logger = json_decode( get_option( "dt_advanced_security_file_logger" ), true );
         $elastic = json_decode( get_option( "dt_advanced_security_elastic_logger" ), true );
+
+        if ( isset( $_REQUEST['ping'] ) ) {
+            if ( $_REQUEST['ping'] == 'elastic' ) {
+                require_once( plugin_dir_path( __FILE__ ) . '../logger/elastic-logger.php' );
+                $ping_result = DT_Advanced_Security_Elastic_Logger::instance()->post_to_api([
+                    '@timestamp' => gmdate( DateTimeInterface::RFC3339_EXTENDED ),
+                    'message' => 'Test connection from ' . home_url(),
+                ]);
+
+            }
+        }
         ?>
-        <form method="POST" action="">
+        <form method="POST" action="?page=dt_advanced_security">
             <?php wp_nonce_field( 'security_headers', 'security_headers_nonce' ); ?>
 
             <button type="submit" class="button">Save</button>
@@ -225,6 +236,22 @@ class DT_Advanced_Security_Settings {
                                            />
                                 </td>
                             </tr>
+                            <?php if ( isset( $elastic['url'] ) && !empty( $elastic['url'] ) ): ?>
+                            <tr>
+                                <th>Test Connection</th>
+                                <td>
+                                    <a href="?page=dt_advanced_security&ping=elastic#check-elastic" id="check-elastic">Check now</a>
+                                    <?php if ( isset( $ping_result ) ) {
+                                        if ( is_wp_error( $ping_result ) ) {
+                                            echo '<span class="notice notice-error">Error</span>';
+                                            echo '<pre><code style="display:block;white-space: normal;">' . esc_html( $ping_result->get_error_message() ) . '</code></pre>';
+                                        } else {
+                                            echo '<span class="notice notice-success">Success!</span>';
+                                        }
+                                    } ?>
+                                </td>
+                            </tr>
+                            <?php endif; ?>
                         </table>
                         <hr>
                         <span class="switch">
