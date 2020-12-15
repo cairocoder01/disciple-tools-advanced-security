@@ -114,7 +114,7 @@ class DT_Advanced_Security_Elastic_Logger extends DT_Advanced_Security_Base_Logg
         }
 
         // plugin -> event.category: package
-        if ( $object_type == 'plugin' || $object_type == 'core' ) {
+        if ( in_array( $object_type, [ 'plugin', 'theme', 'core' ] ) ) {
             $ecs['event']['category'] = 'package';
 
             if ( in_array( $action, [ 'delete', 'delete_fail', 'deactivate_network', 'deactivate' ] ) ) {

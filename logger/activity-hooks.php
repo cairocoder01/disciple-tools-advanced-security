@@ -14,9 +14,11 @@ class DT_Advanced_Security_Hooks
 
         include( 'activity-hooks-user.php' );
         include( 'activity-hooks-plugin.php' );
+        include( 'activity-hooks-theme.php' );
 
         new DT_Advanced_Security_Hooks_User();
         new DT_Advanced_Security_Hooks_Plugin();
+        new DT_Advanced_Security_Hooks_Theme();
 
         add_action( 'wp_upgrade', [ $this, 'update_core' ], 10, 2 );
     }
