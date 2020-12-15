@@ -32,6 +32,12 @@ class DT_Advanced_Security_Elastic_Logger extends DT_Advanced_Security_Base_Logg
         }
     }
 
+    /**
+     * Map activity log ECS schema
+     * @param $args
+     * @return array
+     * @see https://www.elastic.co/guide/en/ecs/current/ecs-reference.html
+     */
     private function map_activity_to_ecs( $args ) {
 
         $plugin_data = get_plugin_data( dirname( __FILE__, 2 ) . '/disciple-tools-advanced-security.php' );
@@ -65,13 +71,32 @@ class DT_Advanced_Security_Elastic_Logger extends DT_Advanced_Security_Base_Logg
             'user' => [
                 'id' => isset( $args['user_id'] ) ? $args['user_id'] : null,
                 'roles' => isset( $args['user_caps'] ) ? [ $args['user_caps'] ] : null,
-            ]
+            ],
         ];
+
+        // try to add IP address
+        $ip = $this->get_client_ip();
+        if ( isset( $ip ) ) {
+            $ecs['client'] = [
+                'ip' => $ip,
+            ];
+        }
+
+        // include user agent info if available
+        if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
+            $ecs['user_agent'] = [
+                'original' => sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ),
+            ];
+        }
 
         // authentication -> event.category: authentication
         $auth_actions = [ 'logged_in', 'login_failed', 'password_reset_request', 'password_reset' ];
         if ( $object_type == 'User' && in_array( $action, $auth_actions ) ) {
             $ecs['event']['category'] = 'authentication';
+
+            // user.id is not set correctly on logged_in, so map that specially
+            $ecs['user']['id'] = $args['object_id'];
+            $ecs['user']['name'] = $args['object_name'];
         }
 
         // user changes -> event.category: iam
@@ -174,6 +199,29 @@ class DT_Advanced_Security_Elastic_Logger extends DT_Advanced_Security_Base_Logg
 
         return ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] === 'on' ? "https" : "http" ) .
             "://$host$uri";
+    }
+
+    /**
+     * @return mixed|null
+     */
+    private function get_client_ip() {
+        $ipaddress = null;
+        if (isset( $_SERVER['HTTP_CLIENT_IP'] )) {
+            $ipaddress = sanitize_text_field( wp_unslash( $_SERVER['HTTP_CLIENT_IP'] ) );
+        } else if (isset( $_SERVER['HTTP_X_FORWARDED_FOR'] )) {
+            $ipaddress = sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) );
+        } else if (isset( $_SERVER['HTTP_X_FORWARDED'] )) {
+            $ipaddress = sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED'] ) );
+        } else if (isset( $_SERVER['HTTP_X_CLUSTER_CLIENT_IP'] )) {
+            $ipaddress = sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_CLUSTER_CLIENT_IP'] ) );
+        } else if (isset( $_SERVER['HTTP_FORWARDED_FOR'] )) {
+            $ipaddress = sanitize_text_field( wp_unslash( $_SERVER['HTTP_FORWARDED_FOR'] ) );
+        } else if (isset( $_SERVER['HTTP_FORWARDED'] )) {
+            $ipaddress = sanitize_text_field( wp_unslash( $_SERVER['HTTP_FORWARDED'] ) );
+        } else if (isset( $_SERVER['REMOTE_ADDR'] )) {
+            $ipaddress = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
+        }
+        return $ipaddress;
     }
 }
 DT_Advanced_Security_Elastic_Logger::instance();
