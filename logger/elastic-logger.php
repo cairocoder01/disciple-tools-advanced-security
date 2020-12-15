@@ -70,7 +70,7 @@ class DT_Advanced_Security_Elastic_Logger extends DT_Advanced_Security_Base_Logg
             ],
             'user' => [
                 'id' => isset( $args['user_id'] ) ? $args['user_id'] : null,
-                'roles' => isset( $args['user_caps'] ) ? [ $args['user_caps'] ] : null,
+                'roles' => isset( $args['user_caps'] ) ? [ $args['user_caps'] ] : [],
             ],
         ];
 
@@ -141,6 +141,16 @@ class DT_Advanced_Security_Elastic_Logger extends DT_Advanced_Security_Base_Logg
             $ecs['event']['type'][] = 'change';
         }
 
+        // flesh out the user data
+        if ( isset( $ecs['user']['id'] ) && !empty( $ecs['user']['id'] ) ) {
+            $user_info = get_userdata( $ecs['user']['id'] );
+            $ecs['user']['name'] = $user_info->user_login;
+            if ( empty( $ecs['user']['roles'] ) ) {
+                $ecs['user']['roles'] = $user_info->roles;
+            } else {
+                $ecs['user']['roles'] = array_unique( array_merge( $ecs['user']['roles'], $user_info->roles ) );
+            }
+        }
         return $ecs;
     }
 
