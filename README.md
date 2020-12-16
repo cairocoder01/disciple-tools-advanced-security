@@ -30,15 +30,14 @@ of new activity logs are added in order to also log those actions to file for se
 
 It is best to create a separate role which can then be assigned to a user. Here are the required permissions :
 
-cluster permissions
-** monitor
-
-index permissions
-** indices : your-dt-logs
-* privileges
-** create_doc
-** create_index (not strictly necessary if you have created the index or don't use time based indexes)
-** monitor
+* cluster privileges
+  * monitor
+* index privileges
+  * indices : your-dt-logs
+  * privileges
+    * create_doc
+    * create_index (not strictly necessary if you have created the index or don't use time based indexes)
+    * monitor
   
   
 ## File Logging Filter
