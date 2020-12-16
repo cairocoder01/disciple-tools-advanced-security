@@ -30,9 +30,10 @@ of new activity logs are added in order to also log those actions to file for se
 
 It is best to create a separate role which can then be assigned to a user. Here are the required permissions :
 
-* cluster permissions
+cluster permissions
 ** monitor
-* index permissions
+
+index permissions
 ** indices : your-dt-logs
 * privileges
 ** create_doc
