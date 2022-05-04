@@ -36,19 +36,19 @@ function dt_advanced_security() {
     /*
      * Check if the Disciple.Tools theme is loaded and is the latest required version
      */
-    $is_theme_dt = strpos($wp_theme->get_template(), "disciple-tools-theme") !== false || $wp_theme->name === "Disciple Tools";
-    if ($is_theme_dt && version_compare($version, $dt_advanced_security_required_dt_theme_version, "<")) {
-        add_action('admin_notices', 'dt_advanced_security_hook_admin_notice');
-        add_action('wp_ajax_dismissed_notice_handler', 'dt_hook_ajax_notice_handler');
+    $is_theme_dt = strpos( $wp_theme->get_template(), "disciple-tools-theme" ) !== false || $wp_theme->name === "Disciple Tools";
+    if ($is_theme_dt && version_compare( $version, $dt_advanced_security_required_dt_theme_version, "<" )) {
+        add_action( 'admin_notices', 'dt_advanced_security_hook_admin_notice' );
+        add_action( 'wp_ajax_dismissed_notice_handler', 'dt_hook_ajax_notice_handler' );
         return false;
     }
-    if (!$is_theme_dt) {
+    if ( !$is_theme_dt) {
         return false;
     }
     /**
      * Load useful function from the theme
      */
-    if (!defined('DT_FUNCTIONS_READY')) {
+    if ( !defined( 'DT_FUNCTIONS_READY' )) {
         require_once get_template_directory() . '/dt-core/global-functions.php';
     }
 
