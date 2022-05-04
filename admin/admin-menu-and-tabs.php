@@ -64,7 +64,7 @@ class DT_Advanced_Security_Menu {
         $settings = DT_Advanced_Security_Settings::instance();
         add_menu_page(
             __( 'Settings', 'disciple_tools' ),
-            __( 'Security (DT)', 'disciple_tools' ),
+            __( 'Security (D.T)', 'disciple_tools' ),
             'manage_dt',
             'dt_advanced_security',
         [ $settings, 'content' ], 'dashicons-lock', 60 );

@@ -46,8 +46,8 @@ jobs:
     # Below borrowed from https://github.com/actions/upload-release-asset
     - name: Build project
       run: |
-        mkdir disciple-tools-advanced-security |
-        cp -r disciple-tools-advanced-security.php LICENSE admin assets logger disciple-tools-advanced-security/ |
+        mkdir disciple-tools-advanced-security
+        cp -r disciple-tools-advanced-security.php LICENSE admin assets logger disciple-tools-advanced-security/
         zip -r disciple-tools-advanced-security.zip disciple-tools-advanced-security
     - name: Create Release
       id: create_release

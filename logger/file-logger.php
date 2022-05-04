@@ -56,7 +56,7 @@ class DT_Advanced_Security_File_Logger extends DT_Advanced_Security_Base_Logger
     }
 
     public function get_log_path() {
-        $path = DT_Advanced_Security::get_instance()->dir_path . "logs/";
+        $path = WP_PLUGIN_DIR.'/disciple-tools-advanced-security/logs/';
 
         if ( is_multisite() ) {
             $site = get_blog_details();

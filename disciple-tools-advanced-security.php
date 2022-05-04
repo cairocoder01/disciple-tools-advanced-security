@@ -4,7 +4,7 @@
  * Plugin URI: https://github.com/cairocoder01/disciple-tools-advanced-security
  * Description: Disciple Tools - Advanced Security The Disciple Tools Advanced Security Plugin is intended to facilitate advanced security audits
  * of activity on your Disciple.Tools site.
- * Version:  0.3.1
+ * Version:  0.3.2
  * Author URI: https://github.com/cairocoder01
  * GitHub Plugin URI: https://github.com/cairocoder01/disciple-tools-advanced-security
  * Requires at least: 4.7.0
@@ -20,7 +20,6 @@
 if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
-$dt_advanced_security_required_dt_theme_version = '0.28.0';
 
 /**
  * Gets the instance of the `DT_Advanced_Security` class.
@@ -30,32 +29,32 @@ $dt_advanced_security_required_dt_theme_version = '0.28.0';
  * @return object|bool
  */
 function dt_advanced_security() {
-    global $dt_advanced_security_required_dt_theme_version;
+    $dt_advanced_security_required_dt_theme_version = '0.28.0';
     $wp_theme = wp_get_theme();
     $version = $wp_theme->version;
 
     /*
      * Check if the Disciple.Tools theme is loaded and is the latest required version
      */
-    $is_theme_dt = strpos( $wp_theme->get_template(), "disciple-tools-theme" ) !== false || $wp_theme->name === "Disciple Tools";
-    if ( $is_theme_dt && version_compare( $version, $dt_advanced_security_required_dt_theme_version, "<" ) ) {
-        add_action( 'admin_notices', 'dt_advanced_security_hook_admin_notice' );
-        add_action( 'wp_ajax_dismissed_notice_handler', 'dt_hook_ajax_notice_handler' );
+    $is_theme_dt = strpos($wp_theme->get_template(), "disciple-tools-theme") !== false || $wp_theme->name === "Disciple Tools";
+    if ($is_theme_dt && version_compare($version, $dt_advanced_security_required_dt_theme_version, "<")) {
+        add_action('admin_notices', 'dt_advanced_security_hook_admin_notice');
+        add_action('wp_ajax_dismissed_notice_handler', 'dt_hook_ajax_notice_handler');
         return false;
     }
-    if ( !$is_theme_dt ){
+    if (!$is_theme_dt) {
         return false;
     }
     /**
      * Load useful function from the theme
      */
-    if ( !defined( 'DT_FUNCTIONS_READY' ) ){
+    if (!defined('DT_FUNCTIONS_READY')) {
         require_once get_template_directory() . '/dt-core/global-functions.php';
     }
 
-    return DT_Advanced_Security::get_instance();
+    return DT_Advanced_Security::instance();
 }
-add_action( 'after_setup_theme', 'dt_advanced_security' );
+add_action( 'after_setup_theme', 'dt_advanced_security', 20 );
 
 /**
  * Singleton class for setting up the plugin.
@@ -65,80 +64,29 @@ add_action( 'after_setup_theme', 'dt_advanced_security' );
  */
 class DT_Advanced_Security {
 
-    public $token;
-    public $version;
-    public $dir_path = '';
-    public $dir_uri = '';
-    public static function get_instance() {
-
-        static $instance = null;
-
-        if ( is_null( $instance ) ) {
-            $instance = new dt_advanced_security();
-            $instance->setup();
-            $instance->plugin_updater_setup();
-            $instance->includes();
-            $instance->admin_setup();
+    private static $_instance = null;
+    public static function instance() {
+        if ( is_null( self::$_instance ) ) {
+            self::$_instance = new self();
         }
-
-        return $instance;
-    }
-    private function __construct() {}
-
-    /**
-     * Sets up variables and language translation
-     */
-    private function setup() {
-
-        // Admin and settings variables
-        $this->token             = 'dt_advanced_security';
-        $this->version             = '0.3.1';
-
-        // Main plugin directory path and URI.
-        $this->dir_path     = trailingslashit( plugin_dir_path( __FILE__ ) );
-        $this->dir_uri      = trailingslashit( plugin_dir_url( __FILE__ ) );
-
-        // Internationalize the text strings used.
-        add_action( 'init', array( $this, 'i18n' ), 2 );
+        return self::$_instance;
     }
 
-    /**
-     * Sets up plugin updater features
-     */
-    private function plugin_updater_setup(){
-
-        if ( is_admin() ){
-
-            // Check for plugin updates
-            if ( ! class_exists( 'Puc_v4_Factory' ) ) {
-                require( get_template_directory() . '/dt-core/libraries/plugin-update-checker/plugin-update-checker.php' );
-            }
-
-            $hosted_json = "https://raw.githubusercontent.com/cairocoder01/disciple-tools-advanced-security/master/admin/version-control.json"; // change this url
-            Puc_v4_Factory::buildUpdateChecker(
-                $hosted_json,
-                __FILE__,
-                'disciple-tools-advanced-security' // change this token
-            );
-
-        }
-    }
-
-    /**
-     * Sets up all file dependencies
-     */
-    private function includes() {
+    private function __construct() {
+        $is_rest = dt_is_rest();
 
         require_once( 'logger/file-logger.php' );
         require_once( 'logger/elastic-logger.php' );
         require_once( 'logger/activity-hooks.php' );
 
-    }
+        /**
+         * @todo Decide if you want to use the REST API example
+         * To remove: delete this following line and remove the folder named /rest-api
+         */
+        if ( $is_rest && strpos( dt_get_url_path(), 'disciple-tools-plugin-starter-template' ) !== false ) {
+            require_once( 'rest-api/rest-api.php' ); // adds starter rest api class
+        }
 
-    /**
-     * Sets up admin area
-     */
-    private function admin_setup() {
         if ( is_admin() ) {
 
             // adds starter admin page and section for plugin
@@ -147,9 +95,15 @@ class DT_Advanced_Security {
             // adds links to the plugin description area in the plugin admin list.
             add_filter( 'plugin_row_meta', [ $this, 'plugin_description_links' ], 10, 4 );
         }
+
+        $this->i18n();
+
+        if ( is_admin() ) {
+            // adds links to the plugin description area in the plugin admin list.
+            add_filter( 'plugin_row_meta', [ $this, 'plugin_description_links' ], 10, 4 );
+        }
+
     }
-
-
 
     /**
      * Filters the array of row meta for each/specific plugin in the Plugins list table.
@@ -306,3 +260,31 @@ if ( ! function_exists( "dt_hook_ajax_notice_handler" )){
         }
     }
 }
+
+/**
+ * Check for plugin updates even when the active theme is not Disciple.Tools
+ *
+ * Below is the publicly hosted .json file that carries the version information. This file can be hosted
+ * anywhere as long as it is publicly accessible. You can download the version file listed below and use it as
+ * a template.
+ * Also, see the instructions for version updating to understand the steps involved.
+ * @see https://github.com/DiscipleTools/disciple-tools-version-control/wiki/How-to-Update-the-Starter-Plugin
+ */
+add_action( 'plugins_loaded', function (){
+    if ( is_admin() && !( is_multisite() && class_exists( "DT_Multisite" ) ) || wp_doing_cron() ){
+        // Check for plugin updates
+        if ( ! class_exists( 'Puc_v4_Factory' ) ) {
+            if ( file_exists( get_template_directory() . '/dt-core/libraries/plugin-update-checker/plugin-update-checker.php' )){
+                require( get_template_directory() . '/dt-core/libraries/plugin-update-checker/plugin-update-checker.php' );
+            }
+        }
+        if ( class_exists( 'Puc_v4_Factory' ) ){
+            Puc_v4_Factory::buildUpdateChecker(
+                'https://raw.githubusercontent.com/cairocoder01/disciple-tools-advanced-security/master/admin/version-control.json',
+                __FILE__,
+                'disciple-tools-advanced-security'
+            );
+
+        }
+    }
+} );
