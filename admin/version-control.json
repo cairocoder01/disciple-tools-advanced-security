@@ -1,16 +1,16 @@
 {
   "name": "Disciple Tools - Advanced Security",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "download_url": "https://github.com/cairocoder01/disciple-tools-advanced-security/releases/latest/download/disciple-tools-advanced-security.zip",
   "sections": {
     "description": "Disciple Tools - Advanced Security.",
     "installation": "(Required) You must have Disciple.Tools Theme installed before using this plugin. Once Disciple.Tools is installed, you can use the normal Plugin system to install the plugin.",
     "changelog": ""
   },
-  "last_updated": "2020-12-15",
-  "upgrade_notice": "Update ECS logging to include greater meta data",
+  "last_updated": "2022-05-04",
+  "upgrade_notice": "Update admin menu naming",
   "requires": "4.7",
-  "tested": "5.6",
+  "tested": "5.9.3",
   "banners": {
     "low": "https://raw.githubusercontent.com/cairocoder01/disciple-tools-advanced-security/master/assets/banner-772x250.png",
     "high": "https://raw.githubusercontent.com/cairocoder01/disciple-tools-advanced-security/master/assets/banner-1544x500.png"
